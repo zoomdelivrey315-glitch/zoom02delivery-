@@ -1599,6 +1599,59 @@ header {
   </div>
 </div>
 
+<!-- ══ FIREBASE REALTIME DB ══ -->
+<script type="module">
+  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
+  import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
+
+  // ══ إعدادات Firebase — غيّرها بإعداداتك ══
+  const firebaseConfig = {
+    apiKey: "FIREBASE_API_KEY",
+    authDomain: "FIREBASE_PROJECT_ID.firebaseapp.com",
+    databaseURL: "https://FIREBASE_PROJECT_ID-default-rtdb.firebaseio.com",
+    projectId: "FIREBASE_PROJECT_ID",
+  };
+
+  const app = initializeApp(firebaseConfig);
+  const db  = getDatabase(app);
+
+  // ── الاستماع للتغييرات في الوقت الفعلي ──
+  onValue(ref(db, 'z02_open'), (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      window.restaurantOpen = data;
+      if (typeof renderRestaurants === 'function') renderRestaurants();
+      if (typeof renderAdminRestaurantsItems === 'function') renderAdminRestaurantsItems();
+      if (typeof updateStoreBigBtn === 'function') updateStoreBigBtn();
+    }
+  });
+
+  onValue(ref(db, 'z02_oos'), (snapshot) => {
+    const data = snapshot.val();
+    if (data) {
+      window.itemOOS = data;
+      if (typeof renderRestaurants === 'function') renderRestaurants();
+    }
+  });
+
+  onValue(ref(db, 'z02_csOpen'), (snapshot) => {
+    const data = snapshot.val();
+    if (data !== null) {
+      window.csServiceOpen = data;
+      if (typeof renderCsCard === 'function') renderCsCard();
+    }
+  });
+
+  // ── دالة الحفظ على Firebase ──
+  window.saveToFirebase = function() {
+    set(ref(db, 'z02_open'),   window.restaurantOpen);
+    set(ref(db, 'z02_oos'),    window.itemOOS);
+    set(ref(db, 'z02_csOpen'), window.csServiceOpen);
+  };
+
+  console.log('✅ Firebase متصل — التغييرات تنعكس فوراً على الزبائن');
+</script>
+
 <script>
 const WHATSAPP = '213542472001';
 const ADMIN_PASS = '2002';
@@ -2535,6 +2588,9 @@ function saveState() {
   try { localStorage.setItem('z02_oos', JSON.stringify(itemOOS)); } catch(e) {}
   try { localStorage.setItem('z02_promo', JSON.stringify(promoCodes)); } catch(e) {}
   try { localStorage.setItem('z02_promoVisible', JSON.stringify(promoVisible)); } catch(e) {}
+
+  // ── حفظ على Firebase (يصل لكل الزبائن فوراً) ──
+  if (typeof window.saveToFirebase === 'function') { window.saveToFirebase(); }
 }
 
 // حفظ حالة المحلات داخل الكود مباشرة (يحل مشكلة إعادة الفتح)
@@ -3574,6 +3630,7 @@ function toggleR(rid,isOpen,el){
   updateStoreBigBtn();
   saveState();
   renderRestaurants();
+  publishToGitHub();
   const toast = document.createElement('div');
   toast.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1a1a;border:1px solid var(--green);color:var(--green);padding:10px 22px;border-radius:14px;font-size:0.88rem;font-weight:700;z-index:9999;white-space:nowrap;box-shadow:0 4px 20px rgba(0,0,0,0.4);';
   toast.textContent = (isOpen ? '🔓 ' : '🔒 ') + (r ? r.name : '') + (isOpen ? ' — مفتوح ✅' : ' — مغلق ✅');
@@ -3637,14 +3694,10 @@ function deleteItemImg(itemId) {
 
 // ══ إعدادات GitHub ══
 const GITHUB_REPO  = 'zoomdelivrey315-glitch/zoom02delivery-';
+const GITHUB_TOKEN_DEFAULT = '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';
 const GITHUB_FILE  = 'index.html';
 function getGithubToken() {
-  let token = localStorage.getItem('z02_ghtoken');
-  if (!token) {
-    token = prompt('أدخل GitHub Token (مرة واحدة فقط):');
-    if (token) localStorage.setItem('z02_ghtoken', token.trim());
-  }
-  return token ? token.trim() : null;
+  return GITHUB_TOKEN_DEFAULT;
 }
 
 function buildUpdatedHTML() {
@@ -3665,9 +3718,8 @@ function showToast(msg, color) {
 }
 
 async function publishToGitHub() {
-  const btn = event.currentTarget;
-  btn.textContent = '⏳ جاري النشر...';
-  btn.disabled = true;
+  const btn = (typeof event !== 'undefined' && event && event.currentTarget) ? event.currentTarget : null;
+  if(btn){ btn.textContent = '⏳ جاري النشر...'; btn.disabled = true; }
   try {
     // 1. جلب الـ SHA الحالي للملف
     const GITHUB_TOKEN = getGithubToken();
@@ -3695,8 +3747,7 @@ async function publishToGitHub() {
   } catch(e) {
     showToast('❌ تعذر الاتصال: ' + e.message, 'var(--red)');
   }
-  btn.textContent = '🚀 نشر مباشرة — يتحدث فوراً لكل الزبائن';
-  btn.disabled = false;
+  if(btn){ btn.textContent = '🚀 نشر مباشرة — يتحدث فوراً لكل الزبائن'; btn.disabled = false; }
 }
 
 function toggleCsService(isOpen) {
