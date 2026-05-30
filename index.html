@@ -846,7 +846,7 @@ header {
         <div class="section-cat-label">سوبرماركت</div>
       </div>
       <div class="section-cat-item" onclick="filterBySection('pastry', this)">
-        <div class="section-cat-circle">🍰</div>
+        <div class="section-cat-circle">🛎️</div>
         <div class="section-cat-label">حلويات</div>
       </div>
     </div>
@@ -2861,7 +2861,7 @@ function renderRestaurants() {
       if (item.isOpen) {
         card.className = 'restaurant-card';
         card.onclick = openCustomerService;
-        card.innerHTML = `<div class="r-banner" style="background:linear-gradient(135deg,#1a0030,#4a0080,#8800cc);"><div class="r-banner-overlay"></div><div class="r-arrow">›</div><div class="r-info"><div class="r-name">خدمات الزبون</div><div class="r-status-row"><span class="r-badge green">● مفتوح</span></div><div class="r-meta"><span class="r-badge">اكتب ما تحتاج</span><br><span class="r-badge orange">⚠️ ثمن التوصيل يتغير حسب عدد المحلات أو الطابور</span></div></div>${csLogoHTML}</div>`;
+        card.innerHTML = `<div class="r-banner" style="background:linear-gradient(135deg,#1a0030,#4a0080,#8800cc);"><div class="r-banner-overlay"></div><div class="r-arrow">›</div><div class="r-info"><div class="r-name">خدمات الزبون</div><div class="r-status-row"><span class="r-badge green">● مفتوح</span></div><div class="r-meta"><span class="r-badge">اكتب ما تحتاج</span></div></div>${csLogoHTML}</div>`;
       } else {
         card.className = 'restaurant-card r-closed';
         card.onclick = null;
@@ -3511,7 +3511,7 @@ function renderAdminRestaurantsItems() {
       {key:'chicken',    label:'🍗 دجاج'},
       {key:'seafood',    label:'🐟 مأكولات بحرية'},
       {key:'superette',  label:'🛒 سوبيارات'},
-      {key:'pastry',     label:'🍰 حلويات'},
+      {key:'pastry',     label:'🛎️ حلويات'},
       ...customSections.map(s => ({key: s.key, label: s.emoji + ' ' + s.label}))
     ];
     const sectionOptsHTML = allSectionOptions.map(s =>
