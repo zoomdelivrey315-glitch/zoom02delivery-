@@ -2,6 +2,9 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="theme-color" content="#FF6B00">
+<meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+<meta http-equiv="Pragma" content="no-cache">
+<meta http-equiv="Expires" content="0">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Zoom 02">
@@ -1653,6 +1656,29 @@ header {
 </script>
 
 <script>
+// ══ AUTO-RELOAD: يتحقق من تحديثات كل 30 ثانية ══
+(function() {
+  const REPO_RAW = 'https://raw.githubusercontent.com/zoomdelivrey315-glitch/zoom02delivery-/main/index.html';
+  let lastModified = null;
+
+  async function checkUpdate() {
+    try {
+      const res = await fetch(REPO_RAW + '?t=' + Date.now(), { method: 'HEAD' });
+      const lm = res.headers.get('last-modified') || res.headers.get('etag');
+      if (lastModified && lm && lm !== lastModified) {
+        location.reload(true); // تحديث فوري
+      }
+      lastModified = lm || lastModified;
+    } catch(e) {}
+  }
+
+  // أول فحص بعد 5 ثوانٍ، ثم كل 30 ثانية
+  setTimeout(() => {
+    checkUpdate();
+    setInterval(checkUpdate, 30000);
+  }, 5000);
+})();
+
 const WHATSAPP = '213542472001';
 const ADMIN_PASS = '2002';
 
