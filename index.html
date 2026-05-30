@@ -1104,6 +1104,7 @@ header {
 <div class="screen" id="screen5">
   <button class="back-btn" onclick="goTo(1)">← رجوع</button>
   <div class="section-head">🛎️ طلب خاص</div>
+  <div style="background:rgba(255,179,0,0.12);border:1px solid rgba(255,179,0,0.35);border-radius:12px;padding:10px 14px;margin-bottom:14px;font-size:0.82rem;color:#FFB300;font-weight:700;text-align:center;">⚠️ ثمن التوصيل يتغير حسب عدد المحلات أو الطابور</div>
   <div class="section-divider"></div>
 
   <label class="form-label">📝 اكتب طلبك</label>
@@ -2708,7 +2709,7 @@ let customSections = [];
 let defaultSections = [
   { key: 'restaurant', emoji: '🍽️', label: 'مطعم',      cats: ['pizza','burger','sandwich','traditional','chicken','seafood'] },
   { key: 'supermarket',emoji: '🛒', label: 'سوبيارات',   cats: ['superette','supermarket','market','grocery'] },
-  { key: 'pastry',     emoji: '🍰', label: 'حلويات',      cats: ['pastry','dessert','cake','sweets','حلويات','patisserie'] },
+  { key: 'services',    emoji: '🛎️', label: 'خدمات',       cats: ['services'] },
 ];
 
 function loadDefaultSections() {
@@ -2860,7 +2861,7 @@ function renderRestaurants() {
       if (item.isOpen) {
         card.className = 'restaurant-card';
         card.onclick = openCustomerService;
-        card.innerHTML = `<div class="r-banner" style="background:linear-gradient(135deg,#1a0030,#4a0080,#8800cc);"><div class="r-banner-overlay"></div><div class="r-arrow">›</div><div class="r-info"><div class="r-name">خدمات الزبون</div><div class="r-status-row"><span class="r-badge green">● مفتوح</span></div><div class="r-meta"><span class="r-badge">اكتب ما تحتاج</span></div></div>${csLogoHTML}</div>`;
+        card.innerHTML = `<div class="r-banner" style="background:linear-gradient(135deg,#1a0030,#4a0080,#8800cc);"><div class="r-banner-overlay"></div><div class="r-arrow">›</div><div class="r-info"><div class="r-name">خدمات الزبون</div><div class="r-status-row"><span class="r-badge green">● مفتوح</span></div><div class="r-meta"><span class="r-badge">اكتب ما تحتاج</span><br><span class="r-badge orange">⚠️ ثمن التوصيل يتغير حسب عدد المحلات أو الطابور</span></div></div>${csLogoHTML}</div>`;
       } else {
         card.className = 'restaurant-card r-closed';
         card.onclick = null;
@@ -2919,6 +2920,10 @@ function filterCat(cat, btn) {
 // ── تصفية الأقسام الدائرية ──
 
 function filterBySection(section, el) {
+  if (section === 'services') {
+    openCustomerService();
+    return;
+  }
   activeSectionFilter = section;
   document.querySelectorAll('.section-cat-item').forEach(i => i.classList.remove('active'));
   el.classList.add('active');
