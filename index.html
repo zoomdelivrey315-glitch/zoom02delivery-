@@ -1602,82 +1602,48 @@ header {
   </div>
 </div>
 
-<!-- ══ FIREBASE REALTIME DB ══ -->
-<script type="module">
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-app.js";
-  import { getDatabase, ref, onValue, set } from "https://www.gstatic.com/firebasejs/10.12.0/firebase-database.js";
-
-  // ══ إعدادات Firebase — غيّرها بإعداداتك ══
-  const firebaseConfig = {
-    apiKey: "FIREBASE_API_KEY",
-    authDomain: "FIREBASE_PROJECT_ID.firebaseapp.com",
-    databaseURL: "https://FIREBASE_PROJECT_ID-default-rtdb.firebaseio.com",
-    projectId: "FIREBASE_PROJECT_ID",
-  };
-
-  const app = initializeApp(firebaseConfig);
-  const db  = getDatabase(app);
-
-  // ── الاستماع للتغييرات في الوقت الفعلي ──
-  onValue(ref(db, 'z02_open'), (snapshot) => {
-    const data = snapshot.val();
-    if (data) {
-      window.restaurantOpen = data;
-      if (typeof renderRestaurants === 'function') renderRestaurants();
-      if (typeof renderAdminRestaurantsItems === 'function') renderAdminRestaurantsItems();
-      if (typeof updateStoreBigBtn === 'function') updateStoreBigBtn();
-    }
-  });
-
-  onValue(ref(db, 'z02_oos'), (snapshot) => {
-    const data = snapshot.val();
-    if (data) {
-      window.itemOOS = data;
-      if (typeof renderRestaurants === 'function') renderRestaurants();
-    }
-  });
-
-  onValue(ref(db, 'z02_csOpen'), (snapshot) => {
-    const data = snapshot.val();
-    if (data !== null) {
-      window.csServiceOpen = data;
-      if (typeof renderCsCard === 'function') renderCsCard();
-    }
-  });
-
-  // ── دالة الحفظ على Firebase ──
-  window.saveToFirebase = function() {
-    set(ref(db, 'z02_open'),   window.restaurantOpen);
-    set(ref(db, 'z02_oos'),    window.itemOOS);
-    set(ref(db, 'z02_csOpen'), window.csServiceOpen);
-  };
-
-  console.log('✅ Firebase متصل — التغييرات تنعكس فوراً على الزبائن');
-</script>
-
 <script>
-// ══ AUTO-RELOAD: يتحقق من تحديثات كل 30 ثانية ══
-(function() {
-  const REPO_RAW = 'https://raw.githubusercontent.com/zoomdelivrey315-glitch/zoom02delivery-/main/index.html';
-  let lastModified = null;
+// ══ JSONBIN — مزامنة فورية مع الزبائن ══
+const JSONBIN_KEY = '$2a$10$80fm6kw4p1RKflcdun/0eeJAd4rt6KadhU1oomYwuI/LGoYOLZgXC';
+const JSONBIN_ID  = '6a1af6feddf5aa59f7788b1f'; // ← سيتم تعبئته
 
-  async function checkUpdate() {
-    try {
-      const res = await fetch(REPO_RAW + '?t=' + Date.now(), { method: 'HEAD' });
-      const lm = res.headers.get('last-modified') || res.headers.get('etag');
-      if (lastModified && lm && lm !== lastModified) {
-        location.reload(true); // تحديث فوري
-      }
-      lastModified = lm || lastModified;
-    } catch(e) {}
-  }
+async function syncToCloud() {
+  if (!JSONBIN_ID || JSONBIN_ID === 'JSONBIN_BIN_ID') return;
+  try {
+    await fetch('https://api.jsonbin.io/v3/b/' + JSONBIN_ID, {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Master-Key': JSONBIN_KEY
+      },
+      body: JSON.stringify({
+        open: restaurantOpen,
+        oos: itemOOS,
+        csOpen: csServiceOpen
+      })
+    });
+  } catch(e) {}
+}
 
-  // أول فحص بعد 5 ثوانٍ، ثم كل 30 ثانية
-  setTimeout(() => {
-    checkUpdate();
-    setInterval(checkUpdate, 30000);
-  }, 5000);
-})();
+async function syncFromCloud() {
+  if (!JSONBIN_ID || JSONBIN_ID === 'JSONBIN_BIN_ID') return;
+  try {
+    const res = await fetch('https://api.jsonbin.io/v3/b/' + JSONBIN_ID + '/latest', {
+      headers: { 'X-Master-Key': JSONBIN_KEY }
+    });
+    const data = (await res.json()).record;
+    if (data.open)  { restaurantOpen = data.open; }
+    if (data.oos)   { itemOOS = data.oos; }
+    if (typeof data.csOpen !== 'undefined') { csServiceOpen = data.csOpen; }
+    renderRestaurants();
+    if (typeof updateStoreBigBtn === 'function') updateStoreBigBtn();
+  } catch(e) {}
+}
+
+// فحص كل 20 ثانية عند الزبون
+setInterval(syncFromCloud, 20000);
+// أول تحميل
+setTimeout(syncFromCloud, 2000);
 
 const WHATSAPP = '213542472001';
 const ADMIN_PASS = '2002';
@@ -2615,8 +2581,8 @@ function saveState() {
   try { localStorage.setItem('z02_promo', JSON.stringify(promoCodes)); } catch(e) {}
   try { localStorage.setItem('z02_promoVisible', JSON.stringify(promoVisible)); } catch(e) {}
 
-  // ── حفظ على Firebase (يصل لكل الزبائن فوراً) ──
-  if (typeof window.saveToFirebase === 'function') { window.saveToFirebase(); }
+  // ── حفظ على JSONBin (يصل لكل الزبائن فوراً) ──
+  if (typeof syncToCloud === 'function') { syncToCloud(); }
 }
 
 // حفظ حالة المحلات داخل الكود مباشرة (يحل مشكلة إعادة الفتح)
