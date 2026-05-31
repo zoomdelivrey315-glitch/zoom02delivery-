@@ -1530,7 +1530,7 @@ header {
     <div class="admin-section admin-tab-general">
       <div class="admin-section-title">➕ إضافة منتج جديد</div>
       <div class="add-product-form">
-        <select id="newItemRestaurant" onchange="updateCatSelect()"><option value="">-- اختر المطعم --</option><option value="r16">🍕 بيتزريا مونيا</option><option value="r1">🍕 Pizzeria Tahri</option><option value="r2">🍕 Slimane Food</option><option value="r3">🥙 البنة التونسية</option><option value="r4">🍲 ريحة البلاد</option><option value="r5">🍔 Waldawne Food</option><option value="r15">🥪 Anes Food</option><option value="r14">🍔 Street Burger</option><option value="r13">🍢 مطعم عروج البقعة</option><option value="r12">👑 Lamiral Plus</option><option value="r11">🌮 Ban Food</option><option value="r10">🍕 El Wssit Food</option><option value="r7">🥩 ملك الكبدة</option><option value="r8">🍗 Kader Fried Chicken</option><option value="r9">🍔 Choual Food</option><option value="r6">🍕 Pizzeria Dream</option><option value="sa1">🛒 سوبيارات أمين</option></select>
+        <select id="newItemRestaurant" onchange="updateCatSelect()"><option value="">-- اختر المطعم --</option><option value="r16">🍕 بيتزريا مونيا</option><option value="r1">🍕 Pizzeria Tahri</option><option value="r2">🍕 Slimane Food</option><option value="r3">🥙 البنة التونسية</option><option value="r4">🍲 ريحة البلاد</option><option value="r5">🍔 Waldawne Food</option><option value="r15">🥪 Anes Food</option><option value="r14">🍔 Street Burger</option><option value="r13">🍢 مطعم عروج البقعة</option><option value="r12">👑 Lamiral Plus</option><option value="r11">🌮 Ban Food</option><option value="r10">🍕 El Wssit Food</option><option value="r7">🥩 ملك الكبدة</option><option value="r8">🍗 Kader Fried Chicken</option><option value="r9">🍔 Choual Food</option><option value="r6">🍕 Pizzeria Dream</option><option value="sa1">🛒 سوبيارات أمين</option><option value="r19">🍕 Tunisiana Pizzeria</option></select>
         <select id="newItemCat"><option value="">-- اختر الفئة --</option></select>
         <input type="text" id="newItemName" placeholder="اسم المنتج">
         <input type="number" id="newItemPrice" placeholder="السعر بالدج">
@@ -2556,6 +2556,68 @@ const restaurants = [
       {id:'smb16',cat:'Buritos',emoji:'🌯',name:'Burrito Viande',price:600},
       {id:'smb17',cat:'Buritos',emoji:'🌯',name:'Burrito Poulet',price:500},
       {id:'smb18',cat:'Buritos',emoji:'🌯',name:'Burrito Mix',price:600},
+    ]
+  }
+  ,{
+    id:'r19', name:'Tunisiana Pizzeria', emoji:'🍕',
+    desc:'بيتزا • ساندويش • لبني • مطلوعة • شيز برغر • تاكوس • پلا', cat:'pizza',
+    gradient:'linear-gradient(135deg,#001a4d,#003399,#0055ff)',
+    time:'20-40 دق', minOrder:150, status:'open',
+    categories:['pizza','sandwich','lebani','matloua','cheese burger','tacos','plat'],
+    menu:[
+      {id:'tn1',cat:'pizza',emoji:'🍕',name:'Pizza marguerite',price:300},
+      {id:'tn2',cat:'pizza',emoji:'🍕',name:'Pizza poulet haché',price:350},
+      {id:'tn3',cat:'pizza',emoji:'🍕',name:'Pizza viande haché',price:400},
+      {id:'tn4',cat:'pizza',emoji:'🍕',name:'Pizza escalope',price:400},
+      {id:'tn5',cat:'pizza',emoji:'🍕',name:'Pizza merguez',price:400},
+      {id:'tn6',cat:'pizza',emoji:'🍕',name:'Pizza thon',price:400},
+      {id:'tn7',cat:'pizza',emoji:'🍕',name:'Pizza poulet',price:400},
+      {id:'tn8',cat:'pizza',emoji:'🍕',name:'Pizza chawarma',price:500},
+      {id:'tn9',cat:'pizza',emoji:'🍕',name:'Pizza 3 fromage',price:500},
+      {id:'tn10',cat:'pizza',emoji:'🍕',name:'Pizza 4 fromage',price:600},
+      {id:'tn11',cat:'pizza',emoji:'🍕',name:'Pizza 2 saisons',price:500},
+      {id:'tn12',cat:'pizza',emoji:'🍕',name:'Pizza 3 saisons',price:700},
+      {id:'tn13',cat:'pizza',emoji:'🍕',name:'Pizza mélange',price:900},
+      {id:'tn14',cat:'pizza',emoji:'🍕',name:'Pizza tunisiana (spéciale)',price:1000},
+      {id:'tn15',cat:'sandwich',emoji:'🥪',name:'Sandwich viande haché',price:300},
+      {id:'tn16',cat:'sandwich',emoji:'🥪',name:'Sandwich poulet haché',price:300},
+      {id:'tn17',cat:'sandwich',emoji:'🥪',name:'Sandwich chawarma',price:300},
+      {id:'tn18',cat:'sandwich',emoji:'🥪',name:'Sandwich escalope',price:300},
+      {id:'tn19',cat:'sandwich',emoji:'🥪',name:'Sandwich merguez',price:300},
+      {id:'tn20',cat:'sandwich',emoji:'🥪',name:'Sandwich chich taouk',price:300},
+      {id:'tn21',cat:'lebani',emoji:'🫓',name:'Lebani viande haché',price:300},
+      {id:'tn22',cat:'lebani',emoji:'🫓',name:'Lebani poulet haché',price:300},
+      {id:'tn23',cat:'lebani',emoji:'🫓',name:'Lebani chawarma',price:300},
+      {id:'tn24',cat:'lebani',emoji:'🫓',name:'Lebani escalope',price:300},
+      {id:'tn25',cat:'lebani',emoji:'🫓',name:'Lebani merguez',price:300},
+      {id:'tn26',cat:'lebani',emoji:'🫓',name:'Lebani chich taouk',price:300},
+      {id:'tn27',cat:'matloua',emoji:'🫓',name:'Matloua viande haché',price:300},
+      {id:'tn28',cat:'matloua',emoji:'🫓',name:'Matloua poulet haché',price:300},
+      {id:'tn29',cat:'matloua',emoji:'🫓',name:'Matloua chawarma',price:300},
+      {id:'tn30',cat:'matloua',emoji:'🫓',name:'Matloua escalope',price:300},
+      {id:'tn31',cat:'matloua',emoji:'🫓',name:'Matloua merguez',price:300},
+      {id:'tn32',cat:'matloua',emoji:'🫓',name:'Matloua chich taouk',price:300},
+      {id:'tn33',cat:'cheese burger',emoji:'🍔',name:'Cheese burger viande haché',price:300},
+      {id:'tn34',cat:'cheese burger',emoji:'🍔',name:'Cheese burger poulet haché',price:300},
+      {id:'tn35',cat:'cheese burger',emoji:'🍔',name:'Cheese burger escalope',price:300},
+      {id:'tn36',cat:'tacos',emoji:'🌮',name:'Tacos viande haché 2XL',price:500},
+      {id:'tn37',cat:'tacos',emoji:'🌮',name:'Tacos viande haché 3XL',price:700},
+      {id:'tn38',cat:'tacos',emoji:'🌮',name:'Tacos poulet haché 2XL',price:500},
+      {id:'tn39',cat:'tacos',emoji:'🌮',name:'Tacos poulet haché 3XL',price:700},
+      {id:'tn40',cat:'tacos',emoji:'🌮',name:'Tacos chawarma 2XL',price:500},
+      {id:'tn41',cat:'tacos',emoji:'🌮',name:'Tacos chawarma 3XL',price:800},
+      {id:'tn42',cat:'tacos',emoji:'🌮',name:'Tacos escalope 2XL',price:500},
+      {id:'tn43',cat:'tacos',emoji:'🌮',name:'Tacos escalope 3XL',price:900},
+      {id:'tn44',cat:'tacos',emoji:'🌮',name:'Tacos merguez 2XL',price:500},
+      {id:'tn45',cat:'tacos',emoji:'🌮',name:'Tacos merguez 3XL',price:700},
+      {id:'tn46',cat:'tacos',emoji:'🌮',name:'Tacos chich taouk 2XL',price:500},
+      {id:'tn47',cat:'tacos',emoji:'🌮',name:'Tacos chich taouk 3XL',price:700},
+      {id:'tn48',cat:'plat',emoji:'🍽️',name:'Plat viande haché',price:500},
+      {id:'tn49',cat:'plat',emoji:'🍽️',name:'Plat poulet haché',price:500},
+      {id:'tn50',cat:'plat',emoji:'🍽️',name:'Plat chawarma',price:500},
+      {id:'tn51',cat:'plat',emoji:'🍽️',name:'Plat escalope',price:500},
+      {id:'tn52',cat:'plat',emoji:'🍽️',name:'Plat merguez',price:500},
+      {id:'tn53',cat:'plat',emoji:'🍽️',name:'Plat chich taouk',price:500},
     ]
   }
 ]; // END_RESTAURANTS
