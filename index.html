@@ -3435,17 +3435,91 @@ function renderAdminRestaurantsItems() {
         imgLabel.appendChild(cam);
       }
 
+      // زر حذف المنتج
+      const delBtn = document.createElement('button');
+      delBtn.textContent = '🗑️';
+      delBtn.title = 'حذف المنتج';
+      delBtn.style.cssText = 'flex-shrink:0;width:34px;height:34px;border-radius:8px;background:rgba(255,23,68,0.10);border:1px solid rgba(255,23,68,0.25);color:var(--red);font-size:1rem;cursor:pointer;display:flex;align-items:center;justify-content:center;transition:all 0.2s;';
+      delBtn.addEventListener('click', function(){
+        if (!confirm('حذف "' + item.name + '" من ' + r.name + '؟')) return;
+        const idx = r.menu.findIndex(i => i.id === item.id);
+        if (idx !== -1) r.menu.splice(idx, 1);
+        delete itemOOS[item.id];
+        saveState();
+        saveItemPrices();
+        renderAdminRestaurantsItems();
+        // إعادة فتح الأكورديون
+        setTimeout(() => {
+          const b = document.getElementById('acc-body-' + r.id);
+          const a = document.getElementById('acc-arrow-' + r.id);
+          if (b) { b.classList.add('open'); }
+          if (a) { a.classList.add('open'); }
+        }, 50);
+        const t = document.createElement('div');
+        t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1a1a;border:1px solid var(--red);color:var(--red);padding:8px 18px;border-radius:12px;font-size:0.82rem;font-weight:700;z-index:9999;white-space:nowrap;';
+        t.textContent = '🗑️ تم حذف ' + item.name;
+        document.body.appendChild(t);
+        setTimeout(() => t.remove(), 2000);
+      });
+
       controls.appendChild(availBtn);
       controls.appendChild(priceInput);
       controls.appendChild(djLabel);
       controls.appendChild(imgLabel);
+      controls.appendChild(delBtn);
       row.appendChild(controls);
       body.appendChild(row);
     });
 
+    // ── فورم إضافة منتج جديد ──
+    const addRow = document.createElement('div');
+    addRow.style.cssText = 'padding:12px 14px;background:rgba(41,182,246,0.05);border-top:1px solid rgba(41,182,246,0.15);';
+    addRow.innerHTML = `
+      <div style="font-size:0.8rem;color:var(--sky);font-weight:700;margin-bottom:8px;">➕ إضافة منتج جديد</div>
+      <div style="display:flex;flex-wrap:wrap;gap:7px;align-items:center;">
+        <input id="newItemEmoji-${r.id}" type="text" placeholder="🍕" maxlength="4"
+          style="width:52px;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:7px;color:var(--text);font-family:Cairo,sans-serif;font-size:1.1rem;text-align:center;outline:none;">
+        <input id="newItemName-${r.id}" type="text" placeholder="اسم المنتج"
+          style="flex:1;min-width:120px;background:var(--card2);border:1px solid var(--border);border-radius:8px;padding:7px 10px;color:var(--text);font-family:Cairo,sans-serif;font-size:0.85rem;outline:none;">
+        <input id="newItemPrice-${r.id}" type="number" placeholder="السعر"
+          style="width:80px;background:var(--card2);border:1px solid var(--border-orange);border-radius:8px;padding:7px;color:var(--primary);font-family:Cairo,sans-serif;font-size:0.85rem;font-weight:700;text-align:center;outline:none;">
+        <span style="font-size:0.75rem;color:var(--text-soft);">دج</span>
+        <button onclick="addNewMenuItem('${r.id}')"
+          style="background:linear-gradient(135deg,var(--sky),#1a8abf);color:#000;border:none;border-radius:8px;padding:8px 16px;font-family:Cairo,sans-serif;font-size:0.82rem;font-weight:800;cursor:pointer;white-space:nowrap;">
+          ➕ إضافة
+        </button>
+      </div>`;
+    body.appendChild(addRow);
+
     acc.appendChild(body);
     container.appendChild(acc);
   });
+}
+
+function addNewMenuItem(restaurantId) {
+  const r = restaurants.find(x => x.id === restaurantId);
+  if (!r) return;
+  const emoji = (document.getElementById('newItemEmoji-' + restaurantId).value.trim()) || '🍽️';
+  const name  = document.getElementById('newItemName-'  + restaurantId).value.trim();
+  const price = parseInt(document.getElementById('newItemPrice-' + restaurantId).value) || 0;
+  if (!name) { alert('الرجاء كتابة اسم المنتج'); return; }
+  const newId = restaurantId + '_custom_' + Date.now();
+  const cat   = r.categories && r.categories.length ? r.categories[0] : (r.cat || 'other');
+  r.menu.push({ id: newId, cat: cat, emoji: emoji, name: name, price: price });
+  saveItemPrices();
+  saveState();
+  renderAdminRestaurantsItems();
+  setTimeout(() => {
+    const b = document.getElementById('acc-body-' + restaurantId);
+    const a = document.getElementById('acc-arrow-' + restaurantId);
+    if (b) b.classList.add('open');
+    if (a) a.classList.add('open');
+  }, 50);
+  const t = document.createElement('div');
+  t.style.cssText = 'position:fixed;bottom:80px;left:50%;transform:translateX(-50%);background:#1a1a1a;border:1px solid var(--sky);color:var(--sky);padding:8px 18px;border-radius:12px;font-size:0.82rem;font-weight:700;z-index:9999;white-space:nowrap;';
+  t.textContent = '✅ تمت إضافة ' + name;
+  document.body.appendChild(t);
+  setTimeout(() => t.remove(), 2000);
 }
 
 function renderAdminPanel() {
